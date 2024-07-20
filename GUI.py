@@ -97,12 +97,13 @@ def display_choosen_image():
     if global_image is not None:
         rgb_image = cvtColor(global_image, COLOR_BGR2RGB)
         height, width = rgb_image.shape[:2]
-        max_height = 300
-        if height > max_height:
-            scale = max_height / height
-            width = int(width * scale)
-            height = max_height
-            rgb_image = resize(rgb_image, (width, height))
+        if height>300 or width>400 :
+            scale_height = 300 / height
+            scale_width = 400 / width
+            scale = min(scale_height, scale_width)
+            new_width = int(width * scale)
+            new_height = int(height * scale)
+            rgb_image = resize(rgb_image, (new_width, new_height))
         image = Image.fromarray(rgb_image)
         photo = ImageTk.PhotoImage(image)
         choosen_image_label.config(image=photo)
@@ -116,12 +117,13 @@ def display_converted_image(converted_image,converted_filepath):
     if converted_image is not None:
         rgb_image = cvtColor(converted_image, COLOR_BGR2RGB)
         height, width = rgb_image.shape[:2]
-        max_height = 300
-        if height > max_height:
-            scale = max_height / height
-            width = int(width * scale)
-            height = max_height
-            rgb_image = resize(rgb_image, (width, height))
+        if height>300 or width>400 :
+            scale_height = 300/ height
+            scale_width = 400 / width
+            scale = min(scale_height, scale_width)
+            new_width = int(width * scale)
+            new_height = int(height * scale)
+            rgb_image = resize(rgb_image, (new_width, new_height))
         image = Image.fromarray(rgb_image)
         photo = ImageTk.PhotoImage(image)
         converted_filepath_label.grid()
@@ -138,10 +140,17 @@ def display_converted_image(converted_image,converted_filepath):
         converted_filepath_label.grid_remove()
         converted_image_label.grid_remove()
 
+def on_enter(e):
+    e.widget['background'] = Hover_Blue
+
+def on_leave(e):
+    e.widget['background'] = Light_Blue
+
 root = tk.Tk()
 root.title("Grayscale Image Studio")
-root.geometry("600x500")
+root.state("zoomed")
 root.configure(bg=Dark_Blue)
+root.geometry("700x500")
 
 main_frame = tk.Frame(root, bg=Dark_Blue, padx=20, pady=20)
 main_frame.pack(fill=tk.BOTH, expand=True)
@@ -173,15 +182,11 @@ choosen_filepath_label.grid(pady=5,padx=10,row=1,column=0)
 
 converted_image_label = tk.Label(display_frame, bg=Dark_Blue)
 converted_image_label.grid(padx=10,row=0,column=2)
+converted_image_label.grid_remove()
 
-converted_filepath_label = tk.Label(display_frame, text="hi", font=("Helvetica", 10), fg=White, bg=Dark_Blue)
+converted_filepath_label = tk.Label(display_frame, text="", font=("Helvetica", 10), fg=White, bg=Dark_Blue)
 converted_filepath_label.grid(padx=10,pady=5,row=1,column=2)
-
-footer_frame = tk.Frame(root, bg=Dark_Blue)
-footer_frame.pack(fill=tk.X, side=tk.BOTTOM, pady=10)
-
-footer_label = tk.Label(footer_frame, text="© I Just Added This To Use Some Space", font=("Helvetica", 10), fg=Light_Gray, bg=Dark_Blue)
-footer_label.pack()
+converted_filepath_label.grid_remove()
 
 arrow_image = Image.open("arrow.png")
 arrow_image = arrow_image.resize((50, 50))
@@ -189,13 +194,14 @@ arrow_photo = ImageTk.PhotoImage(arrow_image)
 
 arrow_label = tk.Label(display_frame, image=arrow_photo, bg=Dark_Blue)
 arrow_label.grid(padx=10, row=0, column=1)
-arrow_label.grid_remove()  # Hide initially
+arrow_label.grid_remove() 
 
-def on_enter(e):
-    e.widget['background'] = Hover_Blue
 
-def on_leave(e):
-    e.widget['background'] = Light_Blue
+footer_frame = tk.Frame(root, bg=Dark_Blue)
+footer_frame.pack(fill=tk.X, side=tk.BOTTOM, pady=10)
+
+footer_label = tk.Label(footer_frame, text="© I Just Added This To Use Some Space", font=("Helvetica", 10), fg=Light_Gray, bg=Dark_Blue)
+footer_label.pack()
 
 for button in [choose_button, capture_button, convert_button]:
     button.bind("<Enter>", on_enter)
