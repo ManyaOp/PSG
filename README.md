@@ -1,5 +1,5 @@
 To Get Started
-Step-1 Download and extract the zip file    
+Step-1 Download the Download_This file (or just clone the repo)   
 Step-2 go to dist folder
 step-3 run the GUI.exe
 
